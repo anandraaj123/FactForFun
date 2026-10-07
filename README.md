@@ -3,7 +3,7 @@
 > **"One rupee. One new thing."**  
 > Pay ₹1. Satisfy your curiosity. Learn something genuine you didn't know 10 seconds ago.
 
-🔗 **Link:** [factforfun-production.up.railway.app](factforfun-production.up.railway.app)
+🔗 🔗 **Live:** [factforfun-production.up.railway.app](https://factforfun-production.up.railway.app)
 
 ---
 
