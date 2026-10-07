@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fact₹1 Admin Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .admin-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+    }
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 0.25rem;
+    }
+    .stat-lbl {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+    }
+    .form-control {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+      color: #fff;
+      font-family: inherit;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: #ffffff;
+    }
+    .badge-active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .badge-inactive {
+      background: rgba(255, 255, 255, 0.05);
+      color: #71717a;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <a href="/" style="color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 600;">← Back to App</a>
+        <h1 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.25rem; color: #ffffff;">Fact₹1 Admin Console</h1>
+      </div>
+      <button id="btnOpenAddModal" class="btn-primary-unlock" style="width: auto; padding: 0.6rem 1.25rem; font-size: 0.85rem;">
+        + Add Fact
+      </button>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-lbl">Total Revenue</div>
+        <div class="stat-val" id="statRevenue">₹0.00</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Paid Orders</div>
+        <div class="stat-val" id="statPaidOrders">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Total Facts</div>
+        <div class="stat-val" id="statTotalFacts">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-lbl">Active Curated Facts</div>
+        <div class="stat-val" id="statActiveFacts">0</div>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+      <input type="text" id="adminSearchInput" class="form-control" placeholder="Search facts by keyword, title, teaser..." style="max-width: 400px;">
+      <button id="btnSearch" class="btn-secondary">Search</button>
+    </div>
+
+    <!-- Facts Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Category</th>
+            <th>Title &amp; Teaser</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminFactsTableBody">
+          <tr><td colspan="6" style="text-align: center;">Loading dataset...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Fact Modal -->
+  <div id="addFactModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 560px;">
+      <button class="modal-close">&times;</button>
+      <div class="modal-header">
+        <h3>Add New Verified Fact</h3>
+        <p>Curate a new ₹1 curiosity</p>
+      </div>
+
+      <form id="addFactForm">
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="newTitle" class="form-control" placeholder="e.g. A Day Longer Than a Year" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="newCategory" class="form-control" placeholder="e.g. Space, Science, India" required>
+        </div>
+        <div class="form-group">
+          <label>Teaser (Incomplete hook shown before payment)</label>
+          <textarea id="newTeaser" class="form-control" rows="2" placeholder="e.g. There is a planet where one day lasts longer than one year..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Full Fact (Revealed after ₹1 payment)</label>
+          <textarea id="newFactText" class="form-control" rows="2" placeholder="e.g. A day on Venus is longer than its year." required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Explanation (Scientific/Historical context)</label>
+          <textarea id="newExplanation" class="form-control" rows="3" placeholder="e.g. Venus takes 243 Earth days to rotate once..." required></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label>Source Name</label>
+            <input type="text" id="newSourceName" class="form-control" placeholder="e.g. NASA Solar System" required>
+          </div>
+          <div class="form-group">
+            <label>Source URL</label>
+            <input type="url" id="newSourceUrl" class="form-control" placeholder="https://science.nasa.gov/..." required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary-unlock" style="width: 100%; margin-top: 1rem;">
+          Save &amp; Publish Fact
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"><span id="toastMessage"></span></div>
+
+  <script>
+    let adminKey = localStorage.getItem('fact1_admin_key') || 'admin_fact1_secure_key_2026';
+
+    function checkAuth() {
+      if (!adminKey) {
+        adminKey = prompt('Please enter your Admin Secret Key:') || '';
+        if (adminKey) localStorage.setItem('fact1_admin_key', adminKey);
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/admin/stats', {
+          headers: { 'X-Admin-Key': adminKey }
+        });
+        if (res.status === 401) {
+          localStorage.removeItem('fact1_admin_key');
+          adminKey = prompt('Invalid Key. Enter Admin Secret Key:');
+          if (adminKey) {
+            localStorage.setItem('fact1_admin_key', adminKey);
+            return loadStats();
+          }
+          return;
+        }
+        const data = await res.json();
+        document.getElementById('statRevenue').textContent = '₹' + data.total_revenue_inr.toFixed(2);
+        document.getElementById('statPaidOrders').textContent = data.successful_orders;
+        document.getElementById('statTotalFacts').textContent = data.total_facts;
+        document.getElementById('statActiveFacts').textContent = data.active_facts;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadFacts(search = '') {
+      try {
+        let url = '/api/admin/facts?limit=100';
+        if (search) url += '&search=' + encodeURIComponent(search);
+        
+        const res = await fetch(url, {
+          headers: { 'X-Admin-Key': adminKey }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const tbody = document.getElementById('adminFactsTableBody');
+
+        if (data.facts.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No facts found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.facts.map(f => `
+          <tr>
+            <td><strong>#${f.id}</strong></td>
+            <td><span class="cat-pill" style="padding:0.2rem 0.5rem;font-size:0.75rem;">${escapeHtml(f.category)}</span></td>
+            <td>
+              <div style="font-weight:700;color:#fff;margin-bottom:2px;">${escapeHtml(f.title)}</div>
+              <div style="color:var(--text-muted);font-size:0.8rem;">${escapeHtml(f.teaser)}</div>
+            </td>
+            <td>
+              <a href="${escapeHtml(f.source_url)}" target="_blank" style="color:var(--accent-gold);text-decoration:none;font-size:0.8rem;">
+                ${escapeHtml(f.source_name)} ↗
+              </a>
+            </td>
+            <td>
+              <span class="${f.is_active ? 'badge-active' : 'badge-inactive'}">
+                ${f.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </td>
+            <td>
+              <button onclick="toggleActive(${f.id})" class="btn-secondary" style="padding:0.3rem 0.6rem;font-size:0.75rem;">
+                ${f.is_active ? 'Deactivate' : 'Activate'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function toggleActive(factId) {
+      try {
+        const res = await fetch(`/api/admin/facts/${factId}/toggle-active`, {
+          method: 'PATCH',
+          headers: { 'X-Admin-Key': adminKey }
+        });
+        if (res.ok) {
+          showToast('Updated fact status');
+          loadFacts();
+          loadStats();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function handleAddFact(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('newTitle').value,
+        category: document.getElementById('newCategory').value,
+        teaser: document.getElementById('newTeaser').value,
+        fact_text: document.getElementById('newFactText').value,
+        explanation: document.getElementById('newExplanation').value,
+        source_name: document.getElementById('newSourceName').value,
+        source_url: document.getElementById('newSourceUrl').value,
+        interestingness_score: 5,
+        is_active: true
+      };
+
+      try {
+        const res = await fetch('/api/admin/facts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Key': adminKey
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          document.getElementById('addFactModal').style.display = 'none';
+          document.getElementById('addFactForm').reset();
+          showToast('Fact added successfully!');
+          loadFacts();
+          loadStats();
+        } else {
+          const err = await res.json();
+          alert(err.detail || 'Failed to add fact');
+        }
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Event listeners
+    document.getElementById('btnOpenAddModal').onclick = () => document.getElementById('addFactModal').style.display = 'flex';
+    document.querySelector('#addFactModal .modal-close').onclick = () => document.getElementById('addFactModal').style.display = 'none';
+    document.getElementById('addFactForm').onsubmit = handleAddFact;
+    document.getElementById('btnSearch').onclick = () => loadFacts(document.getElementById('adminSearchInput').value);
+    document.getElementById('adminSearchInput').onkeyup = (e) => { if (e.key === 'Enter') loadFacts(e.target.value); };
+
+    checkAuth();
+    loadStats();
+    loadFacts();
+  </script>
+</body>
+</html>

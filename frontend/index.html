@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>Fact₹1 — One Rupee. One New Thing.</title>
+  <meta name="title" content="Fact₹1 — One Rupee. One New Thing.">
+  <meta name="description" content="One rupee. One new thing. Pay ₹1. Learn something you didn't know.">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://fact1.in/">
+  <meta property="og:title" content="Fact₹1 — One Rupee. One New Thing.">
+  <meta property="og:description" content="Pay ₹1. Learn something you didn't know.">
+  <meta property="og:image" content="https://fact1.in/favicon.svg">
+  <meta property="twitter:card" content="summary_large_image">
+
+  <link rel="canonical" href="https://fact1.in/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Cashfree Payment Gateway SDK (v3) -->
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js" defer></script>
+  <!-- Razorpay Checkout SDK (Alternate) -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+</head>
+<body>
+
+  <div class="app-container minimal-layout">
+    <!-- Minimal Top Bar -->
+    <header class="top-bar">
+      <a href="/" class="brand-badge" title="Fact₹1">
+        <span>FACT</span>
+        <span class="currency-pill">₹1</span>
+      </a>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-focus-container">
+      
+      <!-- Initial Screen (Before Payment) -->
+      <div id="initialHeroSection" class="initial-hero">
+        <h1 class="hero-title-main">One rupee. One new thing.</h1>
+        <p class="hero-sub-main">Pay ₹1. Learn something you didn't know.</p>
+
+        <div class="cta-action-wrapper">
+          <button id="btnMainFactPay" class="btn-fact-pill" aria-label="Pay ₹1 to get a fact">
+            <span class="pill-bracket">(</span>
+            <span class="pill-text">Fact ₹1</span>
+            <span class="pill-bracket">)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Revealed Fact Card (Shown After Payment) -->
+      <article id="revealedFactCard" class="fact-card revealed-mode" style="display: none;">
+        <h2 class="curiosity-heading" id="revealedTitle">DID YOU KNOW?</h2>
+
+        <p class="unlocked-fact-statement" id="revealedStatement">
+          <!-- Populated dynamically -->
+        </p>
+
+        <div class="unlocked-explanation" id="revealedExplanation">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Single Action: Unlock Another Fact -->
+        <div class="unlocked-actions-single">
+          <button id="btnBuyAnotherFact" class="btn-fact-pill" title="Pay ₹1 to learn another new fact">
+            <span class="pill-bracket">(</span>
+            <span class="pill-text">Fact ₹1</span>
+            <span class="pill-bracket">)</span>
+          </button>
+        </div>
+      </article>
+
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="site-footer">
+      <p>Fact₹1 • <a href="/admin">Admin</a></p>
+    </footer>
+  </div>
+
+  <!-- Modal: Payment Gateway / Simulator -->
+  <div id="simPaymentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="simModalTitle">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-header">
+        <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">⚡</div>
+        <h3 id="simModalTitle">Fact₹1 Checkout</h3>
+        <p>Testing Mode • Simulated ₹1 Payment</p>
+      </div>
+
+      <div class="payment-summary-box">
+        <div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Amount Payable</div>
+          <div style="font-size: 0.9rem; font-weight: 600;">1 Fact</div>
+        </div>
+        <div class="payment-amount">₹1.00</div>
+      </div>
+
+      <div class="sim-upi-apps">
+        <div class="sim-app-badge selected">UPI</div>
+        <div class="sim-app-badge">GPay</div>
+        <div class="sim-app-badge">PhonePe</div>
+        <div class="sim-app-badge">Paytm</div>
+      </div>
+
+      <button id="btnSimPaySuccess" class="btn-primary-unlock" style="margin-bottom: 0.75rem;">
+        <span>✓ Pay ₹1 (Test)</span>
+      </button>
+
+      <button id="btnSimCancel" class="btn-secondary" style="width: 100%;">
+        <span>Cancel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span id="toastMessage">Notification</span>
+  </div>
+
+  <!-- Client Script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
