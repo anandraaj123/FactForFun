@@ -3,6 +3,8 @@
 > **"One rupee. One new thing."**  
 > Pay ₹1. Satisfy your curiosity. Learn something genuine you didn't know 10 seconds ago.
 
+🔗 **Repository Link:** [https://github.com/anandraaj123/FactForFun](https://github.com/anandraaj123/FactForFun)
+
 ---
 
 ## ⚡ Product Philosophy
